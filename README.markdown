@@ -6,8 +6,8 @@ A command line utility that allows read/write (i.e copy/paste) access to the sys
 
 When `require("node-copy-paste")`, two Global functions are added:
 
-- `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string or readable stream.
-- `paste()`: synchrounously returns the current contents of the system clip board.
+- `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.
+- `paste()`: synchronously returns the current contents of the system clip board.
 
 ## Getting node-copy-paste
 
@@ -21,7 +21,7 @@ Alternatively you can clone this git repository:
 
 ## Future plans
 
-I'm hoping to add various fallbacks for instances when `xclip` or `clip` is not avaiable.  Also this library needs to be more thoroughly tested on windows.
+I'm hoping to add various fallbacks for instances when `xclip` or `clip` is not avaiable (see [experimental-fallbacks](https://github.com/xavi-/node-copy-paste/tree/experimental-fallbacks) branch).  Also this library needs to be more thoroughly tested on windows.
 
 ## Developed by
 * Xavi Ramirez

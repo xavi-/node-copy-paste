@@ -19,7 +19,7 @@ Rarely is it a good idea to install modules globally, but `node-copy-paste` is i
 
 Alternatively you can clone this git repository:
 
-	git://github.com/xavi-/node-copy-paste.git
+	git clone git://github.com/xavi-/node-copy-paste.git
 
 ## Future plans
 

@@ -19,7 +19,6 @@ switch(process.platform) {
 		break;
 }
 
-
 GLOBAL.copy = exports.copy = function(text) {
 	var child = spawn(config.copy.command, config.copy.args);
 

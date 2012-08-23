@@ -6,7 +6,7 @@ A command line utility that allows read/write (i.e copy/paste) access to the sys
 
 When `require("node-copy-paste")`, two Global functions are added:
 
-- `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string or readable stream.
+- `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.
 - `paste()`: synchronously returns the current contents of the system clip board.
 
 ## Getting node-copy-paste

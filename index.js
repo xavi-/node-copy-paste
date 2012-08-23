@@ -1,17 +1,20 @@
-var execSync = require("execSync");
-var spawn = require("child_process").spawn;
+var copypaste;
 
-GLOBAL.copy = function(text) {
-	var child = spawn("pbcopy");
+switch(process.platform) {
+	case "darwin":
+		copypaste = require("./platform/darwin");
+		break;
+	case "win32":
+		copypaste = require("./platform/win32");
+		break;
+	case "linux":
+		copypaste = require("./platform/linux");
+		break;
+	default:
+		throw "Unknown platform.  Don't know how to copy and paste."
+		break;
+}
 
-	child
-		.on("error", function(err) { console.error("A copy error has occured: ", err); })
-		.on("close", function() { console.log("Copy complete"); })
+exports.copy = GLOBAL.copy = copypaste.copy;
+exports.paste = GLOBAL.paste = copypaste.paste;
 
-	if(text.pipe) { text.pipe(child.stdin); }
-	else { child.stdin.end(text); }
-};
-
-GLOBAL.paste = function() {
-	return execSync.stdout("pbpaste");
-};

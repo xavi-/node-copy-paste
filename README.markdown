@@ -1,10 +1,10 @@
 # node-copy-paste
 
-A command line utility that allows read/write (i.e copy/paste) access to the system clipboard.  It does this by wrapping `pbcopy/pbpaste` (for OSX), `xclip` (for linux), and `clip` (for windows). Currently works with node.js v0.8+.
+A command line utility that allows read/write (i.e copy/paste) access to the system clipboard.  It does this by wrapping [`pbcopy/pbpaste`](https://developer.apple.com/library/mac/#documentation/Darwin/Reference/Manpages/man1/pbcopy.1.html) (for OSX), [`xclip`](http://www.cyberciti.biz/faq/xclip-linux-insert-files-command-output-intoclipboard/) (for linux), and [`clip`](http://www.labnol.org/software/tutorials/copy-dos-command-line-output-clipboard-clip-exe/2506/) (for windows). Currently works with node.js v0.8+.
 
 ## The API
 
-When `require("node-copy-paste")`, two Global functions are added:
+When `require("node-copy-paste")` is executed, two global functions are added:
 
 - `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.
 - `paste()`: synchronously returns the current contents of the system clip board.
@@ -13,7 +13,9 @@ When `require("node-copy-paste")`, two Global functions are added:
 
 The easiest way to get node-copy-paste is with [npm](http://npmjs.org/):
 
-	npm install node-copy-paste
+	npm install -g node-copy-paste
+
+Rarely is it a good idea to install modules globally, but `node-copy-paste` is immensely useful while doing work in the REPL or while debugging.  It's nice having it around.
 
 Alternatively you can clone this git repository:
 

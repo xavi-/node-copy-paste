@@ -4,7 +4,7 @@ A command line utility that allows read/write (i.e copy/paste) access to the sys
 
 ## The API
 
-When `require("node-copy-paste")` is executed, two global functions are added:
+When `require("copy-paste")` is executed, two global functions are added:
 
 - `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.
 - `paste()`: synchronously returns the current contents of the system clip board.
@@ -13,7 +13,7 @@ When `require("node-copy-paste")` is executed, two global functions are added:
 
 The easiest way to get node-copy-paste is with [npm](http://npmjs.org/):
 
-	npm install -g node-copy-paste
+	npm install -g copy-paste
 
 Rarely is it a good idea to install modules globally, but `node-copy-paste` is immensely useful while doing work in the REPL or while debugging.  It's nice having it around.
 

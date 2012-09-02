@@ -19,7 +19,9 @@ switch(process.platform) {
 		break;
 }
 
-GLOBAL.copy = exports.copy = function(text) {
+var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
+
+var copy = GLOBAL.copy = exports.copy = function(text) {
 	var child = spawn(config.copy.command, config.copy.args);
 
 	child
@@ -38,6 +40,16 @@ GLOBAL.copy = exports.copy = function(text) {
 };
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
-GLOBAL.paste = exports.paste = function() {
+var paste = GLOBAL.paste = exports.paste = function() {
 	return execSync.stdout(pasteCommand);
+};
+
+exports.noConflict = function() {
+	GLOBAL.copy = _copy;
+	GLOBAL.paste = _paste;
+
+	if(_copy === undefined) { delete GLOBAL.copy; }
+	if(_paste === undefined) { delete GLOBAL.paste; }
+
+	return { copy: copy, paste: paste };
 };

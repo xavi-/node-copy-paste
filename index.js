@@ -15,8 +15,7 @@ switch(process.platform) {
 		config = require("./platform/linux");
 		break;
 	default:
-		throw "Unknown platform.  Don't know how to copy and paste."
-		break;
+		throw "Unknown platform.  Don't know how to copy and paste.";
 }
 
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;

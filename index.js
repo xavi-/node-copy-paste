@@ -40,7 +40,7 @@ var copy = GLOBAL.copy = exports.copy = function(text) {
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
 var paste = GLOBAL.paste = exports.paste = function() {
-	return execSync.stdout(pasteCommand);
+	return execSync(pasteCommand);
 };
 
 exports.noConflict = function() {

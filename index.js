@@ -36,6 +36,8 @@ var copy = GLOBAL.copy = exports.copy = function(text) {
 		else if(type === "[object Array]") { child.stdin.end(util.inspect(text)); }
 		else { child.stdin.end(text.toString()); }
 	}
+
+	return text;
 };
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");

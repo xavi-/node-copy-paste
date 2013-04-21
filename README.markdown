@@ -9,6 +9,8 @@ When `require("copy-paste")` is executed, two global functions are added:
 - `copy(text)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.
 - `paste()`: synchronously returns the current contents of the system clip board.
 
+	**Note**: Unfortunately, I'm having a hard time finding a synchronous version of `child_process.exec` that works on windows, so currently `paste` only works on OSX and Linux.
+
 If you do not want to pollute the global namespaced call `require("copy-paste").noConflict()`.  It'll remove the `copy` and `paste` global functions as well as return an object that has `copy` and `paste` properties.
 
 ## Getting node-copy-paste

@@ -13,5 +13,5 @@
   { "type": "git"
   , "url": "https://github.com/xavi-/node-copy-paste"
   }
-, "dependencies": { "exec-sync": ">= 0.1.4" }
+, "dependencies": { "execSync": ">= 0.0.4" }
 }

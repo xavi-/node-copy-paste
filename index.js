@@ -1,4 +1,4 @@
-var execSync = require("exec-sync");
+var execSync = require("execSync");
 var spawn = require("child_process").spawn;
 var util = require("util");
 

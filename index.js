@@ -32,8 +32,8 @@ var copy = GLOBAL.copy = exports.copy = function(text) {
 		var type = Object.prototype.toString.call(text);
 
 		if(type === "[object String]") { child.stdin.end(text); }
-		else if(type === "[object Object]") { child.stdin.end(util.inspect(text)); }
-		else if(type === "[object Array]") { child.stdin.end(util.inspect(text)); }
+		else if(type === "[object Object]") { child.stdin.end(util.inspect(text, { depth: null })); }
+		else if(type === "[object Array]") { child.stdin.end(util.inspect(text, { depth: null })); }
 		else { child.stdin.end(text.toString()); }
 	}
 

@@ -25,7 +25,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 
 
 	child
-		.on("exit", function() { cb ? cb() : console.log("Copy complete"); })
+		.on("exit", function() { cb ? cb(text) : console.log("Copy complete"); })
 		.stderr.on("data", function(err) { cb ? (err) : console.error(err.toString()); });
 
 	if(text.pipe) { text.pipe(child.stdin); }

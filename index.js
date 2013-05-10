@@ -20,12 +20,13 @@ switch(process.platform) {
 
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
-var copy = GLOBAL.copy = exports.copy = function(text) {
+var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
 
+
 	child
-		.on("exit", function() { console.log("Copy complete"); })
-		.stderr.on("data", function(err) { console.error(err.toString()); });
+		.on("exit", function() { cb ? cb() : console.log("Copy complete"); })
+		.stderr.on("data", function(err) { cb ? (err) : console.error(err.toString()); });
 
 	if(text.pipe) { text.pipe(child.stdin); }
 	else {
@@ -42,7 +43,7 @@ var copy = GLOBAL.copy = exports.copy = function(text) {
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
 var paste = GLOBAL.paste = exports.paste = function() {
-	return execSync(pasteCommand);
+	return execSync.exec(pasteCommand).stdout;
 };
 
 exports.noConflict = function() {

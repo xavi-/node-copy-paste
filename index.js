@@ -51,8 +51,21 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 };
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
-var paste = GLOBAL.paste = exports.paste = function() {
-	return execSync.exec(pasteCommand).stdout;
+var paste = GLOBAL.paste = exports.paste = function(cb) {
+	if(!cb) { return execSync.exec(pasteCommand).stdout; }
+	else {
+		var child = spawn(config.paste.command, config.paste.args);
+		var data = [], err = [];
+		child.on("error", function(err) { cb(err); });
+		child.stdout
+			.on("data", function(chunk) { data.push(chunk); })
+			.on("end", function() { cb(null, data.join("")); })
+		;
+		child.stderr
+			.on("data", function(chunk) { err.push(chunk); })
+			.on("end", function() { cb(err.join("")); })
+		;
+	}
 };
 
 exports.noConflict = function() {

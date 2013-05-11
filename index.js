@@ -23,10 +23,19 @@ var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
 
-
+	var err = [];
 	child
 		.on("exit", function() { cb ? cb(null, text) : console.log("Copy complete"); })
-		.stderr.on("data", function(err) { cb ? cb(err) : console.error(err.toString()); });
+		.on("error", function(err) { cb(err); })
+		.stderr
+			.on("data", function(chunk) { err.push(chunk); })
+			.on("end", function() {
+				var error = err.join("");
+
+				if(cb) { cb(error); }
+				else { console.log(error); }
+			})
+	;
 
 	if(text.pipe) { text.pipe(child.stdin); }
 	else {

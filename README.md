@@ -6,7 +6,7 @@ A command line utility that allows read/write (i.e copy/paste) access to the sys
 
 When `require("copy-paste")` is executed, two global functions are added:
 
-- `copy(text, callback)`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.  Returns the same value passed in. Optional callback will fire when the copy operation is complete.
+- `copy(text[, callback])`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.  Returns the same value passed in. Optional callback will fire when the copy operation is complete.
 - `paste([callback])`: if no callback is provided, `paste` synchronously returns the current contents of the system clip board.  Otherwise, the contents of the system clip board are passed to the callback as the second parameter.
 
 	**Note**: Unfortunately, I'm having a hard time finding a synchronous version of `child_process.exec` that works on windows, so currently the synchornous version of `paste` (i.e. the version with no callback) only works on OSX and Linux.

@@ -32,7 +32,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 			.on("end", function() {
 				if(err.length === 0) { return; }
 				var error = err.join("");
-				
+
 				if(cb) { cb(error); }
 				else { console.log(error); }
 			})

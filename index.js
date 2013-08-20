@@ -30,6 +30,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
+				if(err.length === 0) { return; }
 				var error = err.join("");
 
 				if(cb) { cb(error); }

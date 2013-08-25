@@ -25,7 +25,10 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 
 	var err = [];
 	child
-		.on("exit", function() { cb ? cb(null, text) : console.log("Copy complete"); })
+		.on("exit", function() {
+			if(cb) { cb(null, text); }
+			else { console.log("Copy complete"); }
+		})
 		.on("error", function(err) { cb(err); })
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })

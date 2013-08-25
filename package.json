@@ -1,5 +1,5 @@
 { "name": "copy-paste"
-, "version": "0.0.8"
+, "version": "0.0.9"
 , "description": "A command line utility that allows read/write (i.e copy/paste) access to the system clipboard."
 , "keywords": [ "copy", "paste", "copy and paste", "clipboard" ]
 , "maintainers":

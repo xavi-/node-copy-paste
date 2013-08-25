@@ -64,7 +64,11 @@ var paste = GLOBAL.paste = exports.paste = function(cb) {
 		;
 		child.stderr
 			.on("data", function(chunk) { err.push(chunk); })
-			.on("end", function() { cb(err.join("")); })
+			.on("end", function() {
+				if(err.length === 0) { return; }
+
+				cb(err.join(""));
+			})
 		;
 	}
 };

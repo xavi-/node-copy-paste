@@ -1,6 +1,13 @@
-var execSync = require("execSync");
 var spawn = require("child_process").spawn;
 var util = require("util");
+
+try {
+	var execSync = (function() {
+		var execSync = require("execSync");
+		return function(cmd) { return execSync.exec(cmd).stdout; };
+	})();
+}
+catch(e) { execSync = null; }
 
 var config;
 
@@ -56,8 +63,8 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
 var paste = GLOBAL.paste = exports.paste = function(cb) {
-	if(!cb) { return execSync.exec(pasteCommand).stdout; }
-	else {
+	if(execSync && !cb) { return execSync(pasteCommand); }
+	else if(cb) {
 		var child = spawn(config.paste.command, config.paste.args);
 		var data = [], err = [];
 		child.on("error", function(err) { cb(err); });
@@ -73,6 +80,10 @@ var paste = GLOBAL.paste = exports.paste = function(cb) {
 				cb(err.join(""));
 			})
 		;
+	} else {
+		console.error(
+			"Unfortunately a synchronous version of paste is not supported on this platform."
+		);
 	}
 };
 

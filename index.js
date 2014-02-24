@@ -9,7 +9,7 @@ try {
 }
 catch(e) { execSync = null; }
 
-var config;
+var config, isSilent;
 
 switch(process.platform) {
 	case "darwin":
@@ -34,7 +34,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	child
 		.on("exit", function() {
 			if(cb) { cb(null, text); }
-			else { console.log("Copy complete"); }
+			else if(!isSilent) { console.log("Copy complete"); }
 		})
 		.on("error", function(err) { cb(err); })
 		.stderr
@@ -44,7 +44,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 				var error = err.join("");
 
 				if(cb) { cb(error); }
-				else { console.log(error); }
+				else if(!isSilent) { console.log(error); }
 			})
 	;
 
@@ -80,7 +80,7 @@ var paste = GLOBAL.paste = exports.paste = function(cb) {
 				cb(err.join(""));
 			})
 		;
-	} else {
+	} else if(!isSilent) {
 		console.error(
 			"Unfortunately a synchronous version of paste is not supported on this platform."
 		);
@@ -94,5 +94,10 @@ exports.noConflict = function() {
 	if(_copy === undefined) { delete GLOBAL.copy; }
 	if(_paste === undefined) { delete GLOBAL.paste; }
 
-	return { copy: copy, paste: paste };
+	return exports;
+};
+
+exports.silent = function() {
+	isSilent = true;
+	return exports;
 };

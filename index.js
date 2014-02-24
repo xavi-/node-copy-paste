@@ -27,14 +27,14 @@ switch(process.platform) {
 
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
-var copy = GLOBAL.copy = exports.copy = function(text, cb) {
+var copy = GLOBAL.copy = exports.copy = function(text, cb, silent) {
 	var child = spawn(config.copy.command, config.copy.args);
 
 	var err = [];
 	child
 		.on("exit", function() {
 			if(cb) { cb(null, text); }
-			else { console.log("Copy complete"); }
+			else if(!silent){ console.log("Copy complete"); }
 		})
 		.on("error", function(err) { cb(err); })
 		.stderr

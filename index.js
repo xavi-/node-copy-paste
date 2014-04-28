@@ -29,23 +29,18 @@ var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
 var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
+	cb = cb || function () {};
 
 	var err = [];
 	child.stdin.on("error", function (err) { cb(err); });
 	child
-		.on("exit", function() {
-			if(cb) { cb(null, text); }
-			else if(!isSilent) { console.log("Copy complete"); }
-		})
+		.on("exit", function() { cb(null, text); })
 		.on("error", function(err) { cb(err); })
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
-				var error = err.join("");
-
-				if(cb) { cb(error); }
-				else if(!isSilent) { console.log(error); }
+				cb(err.join(""));
 			})
 	;
 

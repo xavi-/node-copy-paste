@@ -31,6 +31,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
 
 	var err = [];
+	child.stdin.on("error", function (err) { cb(err); });
 	child
 		.on("exit", function() {
 			if(cb) { cb(null, text); }

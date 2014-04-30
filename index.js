@@ -37,7 +37,10 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 			if(cb) { cb(null, text); }
 			else if(!isSilent) { console.log("Copy complete"); }
 		})
-		.on("error", function(err) { cb(err); })
+		.on("error", function(err) {
+			if(cb) { cb(err); }
+			else if(!isSilent) { console.error("Copy error", err); }
+		})
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {

@@ -9,7 +9,7 @@ try {
 }
 catch(e) { execSync = null; }
 
-var config, isSilent;
+var config;
 
 switch(process.platform) {
 	case "darwin":
@@ -22,36 +22,25 @@ switch(process.platform) {
 		config = require("./platform/linux");
 		break;
 	default:
-		throw "Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.";
+		throw new Error("Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.");
 }
 
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
 var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
+	cb = cb || function () {};
 
 	var err = [];
-	child.stdin.on("error", function (err) {
-		if(cb) { cb(err); }
-		else if (!isSilent) { console.log("Couldn't execute " + config.copy.command + ": " + err); }
-	});
+	child.stdin.on("error", function (err) { cb(err); });
 	child
-		.on("exit", function() {
-			if(cb) { cb(null, text); }
-			else if(!isSilent) { console.log("Copy complete"); }
-		})
-		.on("error", function(err) {
-			if(cb) { cb(err); }
-			else if(!isSilent) { console.error("Copy error", err); }
-		})
+		.on("exit", function() { cb(null, text); })
+		.on("error", function(err) { cb(err); })
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
-				var error = err.join("");
-
-				if(cb) { cb(error); }
-				else if(!isSilent) { console.log(error); }
+				cb(new Error(err.join("")));
 			})
 	;
 
@@ -91,8 +80,8 @@ var paste = GLOBAL.paste = exports.paste = function(cb) {
 				done(new Error(err.join("")));
 			})
 		;
-	} else if(!isSilent) {
-		console.error(
+	} else {
+		throw new Error(
 			"Unfortunately a synchronous version of paste is not supported on this platform."
 		);
 	}
@@ -109,6 +98,5 @@ exports.noConflict = function() {
 };
 
 exports.silent = function() {
-	isSilent = true;
-	return exports;
+	throw new Error("This function is deprecated");
 };

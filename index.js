@@ -72,19 +72,23 @@ var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
 var paste = GLOBAL.paste = exports.paste = function(cb) {
 	if(execSync && !cb) { return execSync(pasteCommand); }
 	else if(cb) {
+		function done (err, data) {
+			cb.apply(this, arguments);
+			done = function () {};
+		}
 		var child = spawn(config.paste.command, config.paste.args);
 		var data = [], err = [];
-		child.on("error", function(err) { cb(err); });
+		child.on("error", function(err) { done(err); });
 		child.stdout
 			.on("data", function(chunk) { data.push(chunk); })
-			.on("end", function() { cb(null, data.join("")); })
+			.on("end", function() { done(null, data.join("")); })
 		;
 		child.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
 
-				cb(err.join(""));
+				done(new Error(err.join("")));
 			})
 		;
 	} else if(!isSilent) {

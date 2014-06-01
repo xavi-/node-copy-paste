@@ -25,23 +25,26 @@ switch(process.platform) {
 		throw "Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.";
 }
 
+var noop = function() {};
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
-var copy = GLOBAL.copy = exports.copy = function(text, cb) {
+var copy = GLOBAL.copy = exports.copy = function(text, callback) {
 	var child = spawn(config.copy.command, config.copy.args);
+
+	var done = callback && function() { callback.apply(this, arguments); done = noop; };
 
 	var err = [];
 	child.stdin.on("error", function (err) {
-		if(cb) { cb(err); }
+		if(done) { done(err); }
 		else if (!isSilent) { console.log("Couldn't execute " + config.copy.command + ": " + err); }
 	});
 	child
 		.on("exit", function() {
-			if(cb) { cb(null, text); }
+			if(done) { done(null, text); }
 			else if(!isSilent) { console.log("Copy complete"); }
 		})
 		.on("error", function(err) {
-			if(cb) { cb(err); }
+			if(done) { done(err); }
 			else if(!isSilent) { console.error("Copy error", err); }
 		})
 		.stderr
@@ -50,7 +53,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 				if(err.length === 0) { return; }
 				var error = err.join("");
 
-				if(cb) { cb(error); }
+				if(done) { done(new Error(error)); }
 				else if(!isSilent) { console.log(error); }
 			})
 	;
@@ -69,14 +72,13 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 };
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
-var paste = GLOBAL.paste = exports.paste = function(cb) {
-	if(execSync && !cb) { return execSync(pasteCommand); }
-	else if(cb) {
-		function done (err, data) {
-			cb.apply(this, arguments);
-			done = function () {};
-		}
+var paste = GLOBAL.paste = exports.paste = function(callback) {
+	if(execSync && !callback) { return execSync(pasteCommand); }
+	else if(callback) {
 		var child = spawn(config.paste.command, config.paste.args);
+
+		var done = callback && function() { callback.apply(this, arguments); done = noop; };
+
 		var data = [], err = [];
 		child.on("error", function(err) { done(err); });
 		child.stdout

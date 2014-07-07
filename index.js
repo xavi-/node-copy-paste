@@ -21,6 +21,9 @@ switch(process.platform) {
 	case "linux":
 		config = require("./platform/linux");
 		break;
+	case "openbsd":
+		config = require("./platform/openbsd");
+		break;
 	default:
 		throw "Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.";
 }

@@ -37,6 +37,10 @@ var copy = GLOBAL.copy = exports.copy = function(text, callback) {
 	var done = callback && function() { callback.apply(this, arguments); done = noop; };
 
 	var err = [];
+
+	child.stdin.setEncoding("utf8");
+	child.stderr.setEncoding("utf8");
+
 	child.stdin.on("error", function (err) {
 		if(done) { done(err); }
 		else if (!isSilent) { console.log("Couldn't execute " + config.copy.command + ": " + err); }
@@ -83,6 +87,10 @@ var paste = GLOBAL.paste = exports.paste = function(callback) {
 		var done = callback && function() { callback.apply(this, arguments); done = noop; };
 
 		var data = [], err = [];
+
+		child.stdin.setEncoding("utf8");
+		child.stderr.setEncoding("utf8");
+
 		child.on("error", function(err) { done(err); });
 		child.stdout
 			.on("data", function(chunk) { data.push(chunk); })

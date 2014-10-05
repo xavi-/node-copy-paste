@@ -4,22 +4,20 @@ A command line utility that allows read/write (i.e copy/paste) access to the sys
 
 ## The API
 
-When `require("copy-paste")` is executed, two global functions are added:
+When `require("copy-paste")` is executed, an object with the following properties is returned:
 
 - `copy(text[, callback])`: asynchronously replaces the current contents of the clip board with `text`.  Takes either a string, array, object, or readable stream.  Returns the same value passed in. Optional callback will fire when the copy operation is complete.
 - `paste([callback])`: if no callback is provided, `paste` synchronously returns the current contents of the system clip board.  Otherwise, the contents of the system clip board are passed to the callback as the second parameter.
 
 	**Note**: The synchronous version of `paste` is not always availabled.  Unfortunately, I'm having a hard time finding a synchronous version of `child_process.exec` that consistently works on all platforms, especially windows.  An error message is shown if the synchronous version of `paste` is used on an unsupported platform.  That said, the asynchronous version of `paste` is always available.
 
-- `require("copy-paste").noConflict()`:  removes `copy` and `paste` from the global namespace.  Returns an object with `copy` and `paste` as properties.
+- `require("copy-paste").global()`:  adds `copy` and `paste` to the global namespace.  Returns an object with `copy` and `paste` as properties.
 
 ## Getting node-copy-paste
 
 The easiest way to get node-copy-paste is with [npm](http://npmjs.org/):
 
 	npm install -g copy-paste
-
-Rarely is it a good idea to install modules globally, but `node-copy-paste` is immensely useful while doing work in the REPL or while debugging.  It's nice having it around.
 
 Alternatively you can clone this git repository:
 

@@ -29,9 +29,8 @@ switch(process.platform) {
 }
 
 var noop = function() {};
-var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
-var copy = GLOBAL.copy = exports.copy = function(text, cb) {
+exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
 
 	cb = cb ? function() { cb.apply(this, arguments); cb = noop; } : noop;
@@ -67,7 +66,7 @@ var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 };
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
-var paste = GLOBAL.paste = exports.paste = function(callback) {
+exports.paste = function(callback) {
 	if(execSync && !callback) { return execSync(pasteCommand); }
 	else if(callback) {
 		var child = spawn(config.paste.command, config.paste.args);
@@ -99,16 +98,16 @@ var paste = GLOBAL.paste = exports.paste = function(callback) {
 	}
 };
 
-exports.noConflict = function() {
-	GLOBAL.copy = _copy;
-	GLOBAL.paste = _paste;
-
-	if(_copy === undefined) { delete GLOBAL.copy; }
-	if(_paste === undefined) { delete GLOBAL.paste; }
-
-	return exports;
-};
-
 exports.silent = function() {
 	throw new Error("DEPRECATED: copy-paste is now always silent.");
+};
+
+exports.noConflict = function() {
+	throw new Error("DEPRECATED: copy-paste no longer adds global variables by default.");
+};
+exports.global = function() {
+	GLOBAL.copy = exports.copy;
+	GLOBAL.paste = exports.paste;
+
+	return exports;
 };

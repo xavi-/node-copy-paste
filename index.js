@@ -9,7 +9,7 @@ try {
 }
 catch(e) { execSync = null; }
 
-var config, isSilent;
+var config;
 
 switch(process.platform) {
 	case "darwin":
@@ -25,43 +25,31 @@ switch(process.platform) {
 		config = require("./platform/openbsd");
 		break;
 	default:
-		throw "Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.";
+		throw new Error("Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.");
 }
 
 var noop = function() {};
 var _copy = GLOBAL.copy, _paste = GLOBAL.paste;
 
-var copy = GLOBAL.copy = exports.copy = function(text, callback) {
+var copy = GLOBAL.copy = exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
 
-	var done = callback && function() { callback.apply(this, arguments); done = noop; };
+	cb = cb ? function() { cb.apply(this, arguments); cb = noop; } : noop;
 
 	var err = [];
 
 	child.stdin.setEncoding("utf8");
 	child.stderr.setEncoding("utf8");
 
-	child.stdin.on("error", function (err) {
-		if(done) { done(err); }
-		else if (!isSilent) { console.log("Couldn't execute " + config.copy.command + ": " + err); }
-	});
+	child.stdin.on("error", function (err) { cb(err); });
 	child
-		.on("exit", function() {
-			if(done) { done(null, text); }
-			else if(!isSilent) { console.log("Copy complete"); }
-		})
-		.on("error", function(err) {
-			if(done) { done(err); }
-			else if(!isSilent) { console.error("Copy error", err); }
-		})
+		.on("exit", function() { cb(null, text); })
+		.on("error", function(err) { cb(err); })
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
-				var error = err.join("");
-
-				if(done) { done(new Error(error)); }
-				else if(!isSilent) { console.log(error); }
+				cb(new Error(err.join("")));
 			})
 	;
 
@@ -104,8 +92,8 @@ var paste = GLOBAL.paste = exports.paste = function(callback) {
 				done(new Error(err.join("")));
 			})
 		;
-	} else if(!isSilent) {
-		console.error(
+	} else {
+		throw new Error(
 			"Unfortunately a synchronous version of paste is not supported on this platform."
 		);
 	}
@@ -122,6 +110,5 @@ exports.noConflict = function() {
 };
 
 exports.silent = function() {
-	isSilent = true;
-	return exports;
+	throw new Error("This function is deprecated");
 };

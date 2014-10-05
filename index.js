@@ -110,5 +110,5 @@ exports.noConflict = function() {
 };
 
 exports.silent = function() {
-	throw new Error("This function is deprecated");
+	throw new Error("DEPRECATED: copy-paste is now always silent.");
 };

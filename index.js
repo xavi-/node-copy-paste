@@ -33,7 +33,7 @@ var noop = function() {};
 exports.copy = function(text, cb) {
 	var child = spawn(config.copy.command, config.copy.args);
 
-	cb = cb ? function() { cb.apply(this, arguments); cb = noop; } : noop;
+	cb = cb || noop;
 
 	var err = [];
 

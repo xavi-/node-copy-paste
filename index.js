@@ -30,25 +30,25 @@ switch(process.platform) {
 
 var noop = function() {};
 
-exports.copy = function(text, cb) {
+exports.copy = function(text, callback) {
 	var child = spawn(config.copy.command, config.copy.args);
 
-	cb = cb ? function() { cb.apply(this, arguments); cb = noop; } : noop;
+	var done = (callback ? function() { callback.apply(this, arguments); done = noop; } : noop);
 
 	var err = [];
 
 	child.stdin.setEncoding("utf8");
 	child.stderr.setEncoding("utf8");
 
-	child.stdin.on("error", function (err) { cb(err); });
+	child.stdin.on("error", function (err) { done(err); });
 	child
-		.on("exit", function() { cb(null, text); })
-		.on("error", function(err) { cb(err); })
+		.on("exit", function() { done(null, text); })
+		.on("error", function(err) { done(err); })
 		.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
-				cb(new Error(err.join("")));
+				done(new Error(err.join("")));
 			})
 	;
 

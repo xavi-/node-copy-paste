@@ -1,13 +1,19 @@
-var spawn = require("child_process").spawn;
+var child_process = require("child_process");
+var spawn = child_process.spawn;
 var util = require("util");
 
-try {
-	var execSync = (function() {
-		var execSync = require("execSync");
-		return function(cmd) { return execSync.exec(cmd).stdout; };
-	})();
-}
-catch(e) { execSync = null; }
+var execSync = (function() {
+	if(child_process.execSync) { // Use native execSync if avaiable
+		return function(cmd) { return child_process.execSync(cmd).toString(); }
+	} else {
+		try { // Try using fallback package if available
+			var execSync = require("execSync");
+			return function(cmd) { return execSync.exec(cmd).stdout; };
+		} catch(e) {}
+	}
+
+	return null;
+})();
 
 var config;
 

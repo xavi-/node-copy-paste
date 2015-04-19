@@ -43,8 +43,8 @@ exports.copy = function(text, callback) {
 
 	var err = [];
 
-	child.stdin.setEncoding("utf8");
-	child.stderr.setEncoding("utf8");
+	child.stdin.setEncoding(config.encoding);
+	child.stderr.setEncoding(config.encoding);
 
 	child.stdin.on("error", function (err) { done(err); });
 	child
@@ -60,12 +60,14 @@ exports.copy = function(text, callback) {
 
 	if(text.pipe) { text.pipe(child.stdin); }
 	else {
-		var type = Object.prototype.toString.call(text);
+		var output, type = Object.prototype.toString.call(text);
 
-		if(type === "[object String]") { child.stdin.end(text); }
-		else if(type === "[object Object]") { child.stdin.end(util.inspect(text, { depth: null })); }
-		else if(type === "[object Array]") { child.stdin.end(util.inspect(text, { depth: null })); }
-		else { child.stdin.end(text.toString()); }
+		if(type === "[object String]") { output = text; }
+		else if(type === "[object Object]") { output = util.inspect(text, { depth: null }); }
+		else if(type === "[object Array]") { output = util.inspect(text, { depth: null }); }
+		else { output = text.toString(); }
+
+		child.stdin.end(new Buffer(output, config.encoding));
 	}
 
 	return text;

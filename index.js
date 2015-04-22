@@ -4,7 +4,7 @@ var util = require("util");
 
 var execSync = (function() {
 	if(child_process.execSync) { // Use native execSync if avaiable
-		return function(cmd) { return child_process.execSync(cmd).toString(); }
+		return function(cmd) { return child_process.execSync(cmd); };
 	} else {
 		try { // Try using fallback package if available
 			var execSync = require("execSync");
@@ -43,9 +43,6 @@ exports.copy = function(text, callback) {
 
 	var err = [];
 
-	child.stdin.setEncoding(config.encoding);
-	child.stderr.setEncoding(config.encoding);
-
 	child.stdin.on("error", function (err) { done(err); });
 	child
 		.on("exit", function() { done(null, text); })
@@ -54,7 +51,7 @@ exports.copy = function(text, callback) {
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
-				done(new Error(err.join("")));
+				done(new Error(config.decode(err)));
 			})
 	;
 
@@ -67,7 +64,7 @@ exports.copy = function(text, callback) {
 		else if(type === "[object Array]") { output = util.inspect(text, { depth: null }); }
 		else { output = text.toString(); }
 
-		child.stdin.end(new Buffer(output, config.encoding));
+		child.stdin.end(config.encode(output));
 	}
 
 	return text;
@@ -75,7 +72,7 @@ exports.copy = function(text, callback) {
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
 exports.paste = function(callback) {
-	if(execSync && !callback) { return execSync(pasteCommand); }
+	if(execSync && !callback) { return config.decode(execSync(pasteCommand)); }
 	else if(callback) {
 		var child = spawn(config.paste.command, config.paste.args);
 
@@ -83,20 +80,17 @@ exports.paste = function(callback) {
 
 		var data = [], err = [];
 
-		child.stdin.setEncoding("utf8");
-		child.stderr.setEncoding("utf8");
-
 		child.on("error", function(err) { done(err); });
 		child.stdout
 			.on("data", function(chunk) { data.push(chunk); })
-			.on("end", function() { done(null, data.join("")); })
+			.on("end", function() { done(null, config.decode(data)); })
 		;
 		child.stderr
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
 
-				done(new Error(err.join("")));
+				done(new Error(config.decode(err)));
 			})
 		;
 	} else {

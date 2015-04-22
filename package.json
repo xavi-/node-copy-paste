@@ -13,6 +13,8 @@
   { "type": "git"
   , "url": "https://github.com/xavi-/node-copy-paste"
   }
+, "dependencies":
+  { "iconv-lite": "^0.4.8" }
 , "optionalDependencies":
   { "execSync": "~1.0.0" }
 }

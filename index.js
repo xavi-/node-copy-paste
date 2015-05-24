@@ -94,9 +94,7 @@ exports.paste = function(callback) {
 			})
 		;
 	} else {
-		throw new Error(
-			"Unfortunately a synchronous version of paste is not supported on this platform."
-		);
+		throw new Error("A synchronous version of paste is not supported on this platform.");
 	}
 };
 

@@ -1,7 +1,7 @@
 var iconv = require("iconv-lite");
 var path = require("path");
 
-var vbsPath = path.join(__dirname, ".\\fallbacks\\paste.vbs");
+var vbsPath = '"' + path.join(__dirname, ".\\fallbacks\\paste.vbs") + '"';
 
 exports.copy = { command: "clip", args: [] };
 exports.paste = { command: "cscript", args: [ "/Nologo", vbsPath ] };

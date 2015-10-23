@@ -16,5 +16,5 @@
 , "dependencies":
   { "iconv-lite": "^0.4.8" }
 , "optionalDependencies":
-  { "execSync": "~1.0.0" }
+  { "sync-exec": "~0.6.x" }
 }

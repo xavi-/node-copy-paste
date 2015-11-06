@@ -7,8 +7,8 @@ var execSync = (function() {
 		return function(cmd) { return child_process.execSync(cmd); };
 	} else {
 		try { // Try using fallback package if available
-			var execSync = require("execSync");
-			return function(cmd) { return execSync.exec(cmd).stdout; };
+			var execSync = require("sync-exec");
+			return function(cmd) { return execSync(cmd).stdout; };
 		} catch(e) {}
 	}
 

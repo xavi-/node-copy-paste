@@ -13,6 +13,16 @@ When `require("copy-paste")` is executed, an object with the following propertie
 
 - `require("copy-paste").global()`:  adds `copy` and `paste` to the global namespace.  Returns an object with `copy` and `paste` as properties.
 
+## Example
+
+```js
+var ncp = require("copy-paste");
+
+ncp.copy('some text', function () {
+  // complete...
+})
+```
+
 ## Getting node-copy-paste
 
 The easiest way to get node-copy-paste is with [npm](http://npmjs.org/):

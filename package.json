@@ -17,4 +17,8 @@
   { "iconv-lite": "^0.4.8" }
 , "optionalDependencies":
   { "sync-exec": "~0.6.x" }
+, "devDependencies":
+  { "mocha": "*", "should": ">=8.2.1" }
+, "scripts":
+  { "test": "node_modules/.bin/mocha -w" }
 }

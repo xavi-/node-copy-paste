@@ -31,4 +31,9 @@ describe('copy and paste', function () {
     
     copy_and_paste("ĀāĂăĄąĆćĈĉĊċČčĎ ፰፱፲፳፴፵፶፷፸፹፺፻፼", done);
   });
+  
+  it('should work correctly for "±"', function (done) {
+    
+    copy_and_paste("±", done);
+  });
 });

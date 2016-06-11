@@ -54,7 +54,7 @@ exports.copy = function(text, callback) {
 			.on("data", function(chunk) { err.push(chunk); })
 			.on("end", function() {
 				if(err.length === 0) { return; }
-				done(new Error(config.decode(err)));
+				done(new Error(config.decode(err, true)));
 			})
 	;
 
@@ -93,7 +93,7 @@ exports.paste = function(callback) {
 			.on("end", function() {
 				if(err.length === 0) { return; }
 
-				done(new Error(config.decode(err)));
+				done(new Error(config.decode(err, true)));
 			})
 		;
 	} else {

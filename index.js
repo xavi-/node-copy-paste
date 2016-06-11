@@ -27,6 +27,9 @@ switch(process.platform) {
 	case "linux":
 		config = require("./platform/linux");
 		break;
+	case "freebsd":
+		config = require("./platform/linux");
+		break;
 	case "openbsd":
 		config = require("./platform/openbsd");
 		break;

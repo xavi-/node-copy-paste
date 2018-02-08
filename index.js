@@ -1,19 +1,7 @@
 var child_process = require("child_process");
 var spawn = child_process.spawn;
+var execSync = child_process.execSync;
 var util = require("util");
-
-var execSync = (function() {
-	if(child_process.execSync) { // Use native execSync if avaiable
-		return function(cmd) { return child_process.execSync(cmd); };
-	} else {
-		try { // Try using fallback package if available
-			var execSync = require("sync-exec");
-			return function(cmd) { return execSync(cmd).stdout; };
-		} catch(e) {}
-	}
-
-	return null;
-})();
 
 var config;
 

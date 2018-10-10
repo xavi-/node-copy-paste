@@ -109,8 +109,8 @@ exports.noConflict = function() {
 	throw new Error("DEPRECATED: copy-paste no longer adds global variables by default.");
 };
 exports.global = function() {
-	GLOBAL.copy = exports.copy;
-	GLOBAL.paste = exports.paste;
+	global.copy = exports.copy;
+	global.paste = exports.paste;
 
 	return exports;
 };

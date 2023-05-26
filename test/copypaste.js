@@ -36,4 +36,14 @@ describe('copy and paste', function () {
     
     copy_and_paste("±", done);
   });
+  
+  it('should work correctly for "❤"', function (done) {
+    
+    copy_and_paste("❤", done);
+  });
+  
+  it('should work correctly for "돋움"', function (done) {
+    
+    copy_and_paste("돋움", done);
+  });
 });

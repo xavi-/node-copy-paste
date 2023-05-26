@@ -31,7 +31,7 @@ switch(process.platform) {
 		config = require("./platform/linux");
 		break;
 	case "openbsd":
-		config = require("./platform/openbsd");
+		config = require("./platform/linux");
 		break;
 	case "android":
 		config = require("./platform/android");

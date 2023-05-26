@@ -34,7 +34,10 @@ exports.copy = function(text, callback) {
 	const opts = { env: Object.assign({}, process.env, config.copy.env) };
 	var child = spawn(config.copy.command, config.copy.args, opts);
 
-	var done = (callback ? function() { callback.apply(this, arguments); done = noop; } : noop);
+	var done = (callback
+		? function() { callback.apply(this, arguments); done = noop; }
+		: function(err) { if(err) { throw err; } done = noop; }
+	);
 
 	var err = [];
 

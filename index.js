@@ -51,13 +51,15 @@ exports.copy = function(text, callback) {
 
 	if(!child.pid) { return text; }
 
-	if(text.pipe) { text.pipe(child.stdin); }
+	if(text?.pipe) { text.pipe(child.stdin); }
 	else {
 		var output, type = Object.prototype.toString.call(text);
 
 		if(type === "[object String]") { output = text; }
 		else if(type === "[object Object]") { output = util.inspect(text, { depth: null }); }
 		else if(type === "[object Array]") { output = util.inspect(text, { depth: null }); }
+		else if(type === "[object Null]") { output = "null"; }
+		else if(type === "[object Undefined]") { output = "undefined"; }
 		else { output = text.toString(); }
 
 		child.stdin.end(config.encode(output));

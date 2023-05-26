@@ -33,6 +33,9 @@ switch(process.platform) {
 	case "openbsd":
 		config = require("./platform/openbsd");
 		break;
+	case "android":
+		config = require("./platform/android");
+		break;
 	default:
 		throw new Error("Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.");
 }

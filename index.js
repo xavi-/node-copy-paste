@@ -31,7 +31,8 @@ switch(process.platform) {
 var noop = function() {};
 
 exports.copy = function(text, callback) {
-	var child = spawn(config.copy.command, config.copy.args);
+	const opts = { env: Object.assign({}, process.env, config.copy.env) };
+	var child = spawn(config.copy.command, config.copy.args, opts);
 
 	var done = (callback ? function() { callback.apply(this, arguments); done = noop; } : noop);
 

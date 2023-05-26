@@ -1,4 +1,4 @@
-exports.copy = { command: "pbcopy", args: [] };
+exports.copy = { command: "pbcopy", args: [], env: { LANG: "en_US.UTF-8" } };
 exports.paste = { command: "pbpaste", args: [] };
 exports.paste.full_command = exports.paste.command;
 exports.encode = function(str) { return Buffer.from(str, "utf8"); };

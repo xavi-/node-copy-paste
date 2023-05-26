@@ -14,9 +14,9 @@ exports.decode = function(chunks) {
 	if(!Array.isArray(chunks)) { chunks = [ chunks ]; }
 
 	var b64 = iconv.decode(Buffer.concat(chunks), "cp437");
-	b64 = b64.substr(0, b64.length - 2); // Chops off extra "\r\n"
-    
+	b64 = b64.substring(0, b64.length - 2); // Chops off extra "\r\n"
+
     // remove bom and decode
-    var result = new Buffer(b64, "base64").slice(3).toString("utf-8");
+    var result = Buffer.from(b64, "base64").subarray(3).toString("utf-8");
     return result;
 };

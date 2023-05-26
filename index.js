@@ -61,18 +61,18 @@ exports.copy = function(text, callback) {
 			})
 	;
 
-	if(child.pid) {
-		if(text.pipe) { text.pipe(child.stdin); }
-		else {
-			var output, type = Object.prototype.toString.call(text);
+	if(!child.pid) { return text; }
 
-			if(type === "[object String]") { output = text; }
-			else if(type === "[object Object]") { output = util.inspect(text, { depth: null }); }
-			else if(type === "[object Array]") { output = util.inspect(text, { depth: null }); }
-			else { output = text.toString(); }
+	if(text.pipe) { text.pipe(child.stdin); }
+	else {
+		var output, type = Object.prototype.toString.call(text);
 
-			child.stdin.end(config.encode(output));
-		}
+		if(type === "[object String]") { output = text; }
+		else if(type === "[object Object]") { output = util.inspect(text, { depth: null }); }
+		else if(type === "[object Array]") { output = util.inspect(text, { depth: null }); }
+		else { output = text.toString(); }
+
+		child.stdin.end(config.encode(output));
 	}
 
 	return text;

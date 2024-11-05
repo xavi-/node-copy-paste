@@ -74,9 +74,11 @@ exports.copy = function(text, callback) {
 
 var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
 exports.paste = function(callback) {
-	if(execSync && !callback) { return config.decode(execSync(pasteCommand)); }
-	else if(callback) {
-		var child = spawn(config.paste.command, config.paste.args);
+	const opts = { env: Object.assign({}, process.env, config.paste.env) };
+	if(execSync && !callback) { 
+		return config.decode(execSync(pasteCommand, { env : opts.env })); 
+	} else if(callback) {
+		var child = spawn(config.paste.command, config.paste.args, opts);
 
 		var done = callback && function() { callback.apply(this, arguments); done = noop; };
 

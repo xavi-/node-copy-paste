@@ -13,7 +13,11 @@ switch(process.platform) {
 		config = require("./platform/win32");
 		break;
 	case "linux":
-		config = require("./platform/linux");
+		if (process.env.WAYLAND_DISPLAY) {
+			config = require("./platform/linux-wayland");
+		} else {
+			config = require("./platform/linux");
+		}
 		break;
 	case "freebsd":
 		config = require("./platform/linux");

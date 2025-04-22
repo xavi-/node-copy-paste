@@ -1,46 +1,53 @@
-const should = require("should");
+const assert = require("node:assert");
+const { describe, it } = require("node:test");
 const clipboard = require("../index.js");
 
-function copy_and_paste(content, done) {
-	clipboard.copy(content, (error_when_copy) => {
-		should.not.exist(error_when_copy);
+function copyAndPasteAsync(content) {
+	return new Promise((resolve, reject) => {
+		clipboard.copy(content, (errorWhenCopy) => {
+			if (errorWhenCopy) return reject(errorWhenCopy);
 
-		clipboard.paste((error_when_paste, p) => {
-			should.not.exist(error_when_paste);
-			should.exist(p);
-			p.should.equal(content);
-			done();
+			clipboard.paste((errorWhenPaste, p) => {
+				if (errorWhenPaste) return reject(errorWhenPaste);
+
+				resolve(p);
+			});
 		});
 	});
 }
 
 describe("copy and paste", () => {
-	it("should work correctly with ascii chars (<128)", (done) => {
-		copy_and_paste("123456789abcdefghijklmnopqrstuvwxyz+-=&_[]<^=>=/{:})-{(`)}", done);
-	});
+	const tests = [
+		{
+			text: "123456789abcdefghijklmnopqrstuvwxyz+-=&_[]<^=>=/{:})-{(`)}",
+			description: "ascii chars (<128)",
+		},
+		{ text: "ÉæÆôöòûùÿÖÜ¢£¥₧ƒ", description: "cp437 chars (<256)" },
+		{ text: "ĀāĂăĄąĆćĈĉĊċČčĎ ፰፱፲፳፴፵፶፷፸፹፺፻፼", description: "unicode chars (<2^16)" },
+		{ text: "±", description: "special chars" },
+		{ text: "你好，我是中文", description: "chinese chars" },
+	];
 
-	it("should work correctly with cp437 chars (<256)", (done) => {
-		copy_and_paste("ÉæÆôöòûùÿÖÜ¢£¥₧ƒ", done);
-	});
+	for (const { text, description } of tests) {
+		it(`should work correctly with ${description}`, async () => {
+			const result = await copyAndPasteAsync(text);
+			assert.ok(result);
+			assert.strictEqual(result, text);
+		});
+	}
 
-	it("should work correctly with unicode chars (<2^16)", (done) => {
-		copy_and_paste("ĀāĂăĄąĆćĈĉĊċČčĎ ፰፱፲፳፴፵፶፷፸፹፺፻፼", done);
-	});
+	it("should work correctly with JSON", async () => {
+		const obj = { name: "John", age: 30 };
+		const expectedText = `{\n\t"name": "John",\n\t"age": 30\n}`;
 
-	it('should work correctly for "±"', (done) => {
-		copy_and_paste("±", done);
-	});
+		return new Promise((resolve, reject) => {
+			clipboard.copy.json(obj, (err, text) => {
+				if (err) return reject(err);
 
-	it("should work correctly with Chinese chars", (done) => {
-		copy_and_paste("你好，我是中文", done);
-	});
-
-	it("should work correctly with JSON", (done) => {
-		clipboard.copy.json({ name: "John", age: 30 }, (err, text) => {
-			should.not.exist(err);
-			should.exist(text);
-			should.equal(text, `{\n\t"name": "John",\n\t"age": 30\n}`);
-			done();
+				assert.ok(text);
+				assert.strictEqual(text, expectedText);
+				resolve();
+			});
 		});
 	});
 });

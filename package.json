@@ -23,11 +23,7 @@
   "dependencies": {
     "iconv-lite": "^0.4.8"
   },
-  "devDependencies": {
-    "mocha": "*",
-    "should": ">=8.2.1"
-  },
   "scripts": {
-    "test": "node_modules/.bin/mocha -w"
+    "test": "node --test test/*js"
   }
 }

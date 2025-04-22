@@ -34,4 +34,13 @@ describe("copy and paste", () => {
 	it("should work correctly with Chinese chars", (done) => {
 		copy_and_paste("你好，我是中文", done);
 	});
+
+	it("should work correctly with JSON", (done) => {
+		clipboard.copy.json({ name: "John", age: 30 }, (err, text) => {
+			should.not.exist(err);
+			should.exist(text);
+			should.equal(text, `{\n\t"name": "John",\n\t"age": 30\n}`);
+			done();
+		});
+	});
 });

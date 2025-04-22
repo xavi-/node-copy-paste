@@ -81,6 +81,7 @@ exports.copy = (text, callback) => {
 
 	return text;
 };
+exports.copy.json = (obj, callback) => exports.copy(JSON.stringify(obj, null, "\t"), callback);
 
 const pasteCommand = [config.paste.command].concat(config.paste.args).join(" ");
 exports.paste = (callback) => {

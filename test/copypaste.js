@@ -36,4 +36,10 @@ describe('copy and paste', function () {
     
     copy_and_paste("±", done);
   });
+
+  it('should work correctly with Chinese chars', function (done) {
+    
+    copy_and_paste("你好，我是中文", done);
+  });
+  
 });

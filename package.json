@@ -1,22 +1,33 @@
-{ "name": "copy-paste"
-, "version": "1.5.3"
-, "description": "A command line utility that allows read/write (i.e copy/paste) access to the system clipboard."
-, "keywords": [ "copy", "paste", "copy and paste", "clipboard" ]
-, "maintainers":
-  [ { "name": "Xavi"
-    , "email": "xavi.rmz@gmail.com"
-    , "web": "http://xavi.co"
+{
+  "name": "copy-paste",
+  "version": "1.5.3",
+  "description": "A command line utility that allows read/write (i.e copy/paste) access to the system clipboard.",
+  "keywords": [
+    "copy",
+    "paste",
+    "copy and paste",
+    "clipboard"
+  ],
+  "maintainers": [
+    {
+      "name": "Xavi",
+      "email": "xavi.rmz@gmail.com",
+      "web": "http://xavi.co"
     }
-  ]
-, "main": "./index.js"
-, "repository":
-  { "type": "git"
-  , "url": "https://github.com/xavi-/node-copy-paste"
+  ],
+  "main": "./index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xavi-/node-copy-paste"
+  },
+  "dependencies": {
+    "iconv-lite": "^0.4.8"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "should": ">=8.2.1"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha -w"
   }
-, "dependencies":
-  { "iconv-lite": "^0.4.8" }
-, "devDependencies":
-  { "mocha": "*", "should": ">=8.2.1" }
-, "scripts":
-  { "test": "node_modules/.bin/mocha -w" }
 }

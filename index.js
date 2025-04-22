@@ -1,11 +1,11 @@
-var child_process = require("child_process");
-var spawn = child_process.spawn;
-var execSync = child_process.execSync
-var util = require("util");
+const child_process = require("node:child_process");
+const spawn = child_process.spawn;
+const execSync = child_process.execSync;
+const util = require("node:util");
 
-var config;
+let config;
 
-switch(process.platform) {
+switch (process.platform) {
 	case "darwin":
 		config = require("./platform/darwin");
 		break;
@@ -29,91 +29,95 @@ switch(process.platform) {
 		config = require("./platform/android");
 		break;
 	default:
-		throw new Error("Unknown platform: '" + process.platform + "'.  Send this error to xavi.rmz@gmail.com.");
+		throw new Error(`Unknown platform: "${process.platform}"`);
 }
 
-var noop = function() {};
+const noop = () => {};
 
-exports.copy = function(text, callback) {
-	const opts = { env: Object.assign({}, process.env, config.copy.env) };
-	var child = spawn(config.copy.command, config.copy.args, opts);
+exports.copy = (text, callback) => {
+	const opts = { env: { ...process.env, ...config.copy.env } };
+	const child = spawn(config.copy.command, config.copy.args, opts);
 
-	var done = (callback
-		? function() { callback.apply(this, arguments); done = noop; }
-		: function(err) { if(err) { throw err; } done = noop; }
-	);
+	let done = callback
+		? (...args) => {
+				callback(...args);
+				done = noop;
+			}
+		: (err) => {
+				if (err) throw err;
 
-	var err = [];
+				done = noop;
+			};
 
-	child.stdin.on("error", function (err) { done(err); });
+	const err = [];
+
+	child.stdin.on("error", (err) => done(err));
 	child
-		.on("exit", function() { done(null, text); })
-		.on("error", function(err) { done(err); })
-		.stderr
-			.on("data", function(chunk) { err.push(chunk); })
-			.on("end", function() {
-				if(err.length === 0) { return; }
-				done(new Error(config.decode(err)));
-			})
-	;
+		.on("exit", () => done(null, text))
+		.on("error", (err) => done(err))
+		.stderr.on("data", (chunk) => err.push(chunk))
+		.on("end", () => {
+			if (err.length === 0) return;
 
-	if(!child.pid) { return text; }
+			done(new Error(config.decode(err)));
+		});
 
-	if(text?.pipe) { text.pipe(child.stdin); }
+	if (!child.pid) return text;
+
+	if (text?.pipe) text.pipe(child.stdin);
 	else {
-		var output, type = Object.prototype.toString.call(text);
+		let output;
 
-		if(type === "[object String]") { output = text; }
-		else if(type === "[object Object]") { output = util.inspect(text, { depth: null }); }
-		else if(type === "[object Array]") { output = util.inspect(text, { depth: null }); }
-		else if(type === "[object Null]") { output = "null"; }
-		else if(type === "[object Undefined]") { output = "undefined"; }
-		else { output = text.toString(); }
+		const type = Object.prototype.toString.call(text);
+		if (type === "[object String]") output = text;
+		else if (type === "[object Object]") output = util.inspect(text, { depth: null });
+		else if (type === "[object Array]") output = util.inspect(text, { depth: null });
+		else if (type === "[object Null]") output = "null";
+		else if (type === "[object Undefined]") output = "undefined";
+		else output = text.toString();
 
 		child.stdin.end(config.encode(output));
 	}
 
 	return text;
 };
+exports.copy.json = (obj, callback) => exports.copy(JSON.stringify(obj, null, "\t"), callback);
 
-var pasteCommand = [ config.paste.command ].concat(config.paste.args).join(" ");
-exports.paste = function(callback) {
-	const opts = { env: Object.assign({}, process.env, config.paste.env) };
-	if(execSync && !callback) { 
-		return config.decode(execSync(pasteCommand, { env : opts.env })); 
-	} else if(callback) {
-		var child = spawn(config.paste.command, config.paste.args, opts);
+const pasteCommand = [config.paste.command].concat(config.paste.args).join(" ");
+exports.paste = (callback) => {
+	const opts = { env: { ...process.env, ...config.paste.env } };
+	if (execSync && !callback) return config.decode(execSync(pasteCommand, opts));
 
-		var done = callback && function() { callback.apply(this, arguments); done = noop; };
+	if (callback) {
+		const child = spawn(config.paste.command, config.paste.args, opts);
 
-		var data = [], err = [];
+		let done =
+			callback &&
+			((...args) => {
+				callback(...args);
+				done = noop;
+			});
 
-		child.on("error", function(err) { done(err); });
+		const data = [];
+		const err = [];
+
+		child.on("error", (err) => done(err));
 		child.stdout
-			.on("data", function(chunk) { data.push(chunk); })
-			.on("end", function() { done(null, config.decode(data)); })
-		;
+			.on("data", (chunk) => data.push(chunk))
+			.on("end", () => done(null, config.decode(data)));
 		child.stderr
-			.on("data", function(chunk) { err.push(chunk); })
-			.on("end", function() {
-				if(err.length === 0) { return; }
+			.on("data", (chunk) => err.push(chunk))
+			.on("end", () => {
+				if (err.length === 0) return;
 
 				done(new Error(config.decode(err)));
-			})
-		;
+			});
 	} else {
 		throw new Error("A synchronous version of paste is not supported on this platform.");
 	}
 };
 
-exports.silent = function() {
-	throw new Error("DEPRECATED: copy-paste is now always silent.");
-};
-
-exports.noConflict = function() {
-	throw new Error("DEPRECATED: copy-paste no longer adds global variables by default.");
-};
-exports.global = function() {
+exports.global = () => {
 	global.copy = exports.copy;
 	global.paste = exports.paste;
 

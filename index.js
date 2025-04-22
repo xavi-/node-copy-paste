@@ -85,7 +85,7 @@ exports.copy.json = (obj, callback) => exports.copy(JSON.stringify(obj, null, "\
 
 const pasteCommand = [config.paste.command].concat(config.paste.args).join(" ");
 exports.paste = (callback) => {
-	const opts = { env: { ...process.env, ...config.paste.env } };
+	const opts = { env: { ...process.env, ...config.paste.env }, maxBuffer: 1024 * 1024 * 10 };
 	if (execSync && !callback) return config.decode(execSync(pasteCommand, opts));
 
 	if (callback) {

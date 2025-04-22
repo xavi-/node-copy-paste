@@ -116,13 +116,6 @@ exports.paste = (callback) => {
 	}
 };
 
-exports.silent = () => {
-	throw new Error("DEPRECATED: copy-paste is now always silent.");
-};
-
-exports.noConflict = () => {
-	throw new Error("DEPRECATED: copy-paste no longer adds global variables by default.");
-};
 exports.global = () => {
 	global.copy = exports.copy;
 	global.paste = exports.paste;

@@ -47,7 +47,15 @@ describe("copy and paste", () => {
 
 				assert.ok(text);
 				assert.strictEqual(text, expectedText);
-				resolve();
+
+				clipboard.paste((err, text) => {
+					if (err) return reject(err);
+
+					assert.ok(text);
+					assert.strictEqual(text, expectedText);
+
+					resolve();
+				});
 			});
 		});
 	});

@@ -11,12 +11,41 @@ When `require("copy-paste")` is executed, an object with the following propertie
 - `paste([callback])`: if no callback is provided, `paste` synchronously returns the current contents of the system clip board.  Otherwise, the contents of the system clip board are passed to the callback as the second parameter. The first one being a potential error.
 - `require("copy-paste").global()`:  adds `copy` and `paste` to the global namespace.  Returns an object with `copy` and `paste` as properties.
 
+### Promise-based API
+
+For modern JavaScript applications, you can use the promise-based interface by requiring the `promises` submodule:
+
+```javascript
+const clipboard = require('copy-paste/promises');
+```
+
+The promise-based API provides the following methods:
+
+- `copy(text)`: Returns a promise that resolves with the copied text when the operation is complete
+- `copy.json(obj)`: Returns a promise that resolves with the copied JSON string when the operation is complete
+- `paste()`: Returns a promise that resolves with the clipboard contents when the operation is complete
+
+Example usage with async/await:
+
+```javascript
+const clipboard = require('copy-paste/promises');
+
+// Copy text
+await clipboard.copy('Hello World');
+
+// Copy JSON
+await clipboard.copy.json({ hello: 'world' });
+
+// Paste text
+const text = await clipboard.paste();
+```
+
 ## Example
 
 ```js
-var ncp = require("copy-paste");
+var clipboard = require("copy-paste");
 
-ncp.copy("some text", (err, text) => {
+clipboard.copy("some text", (err, text) => {
   // complete...
 });
 ```

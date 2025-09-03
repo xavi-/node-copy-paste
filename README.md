@@ -67,6 +67,39 @@ Alternatively you can clone this git repository:
 
 	git clone git://github.com/xavi-/node-copy-paste.git
 
+
+## TypeScript Support
+
+To use `node-copy-paste` in a TypeScript project, you can install the community-maintained type definitions from DefinitelyTyped:
+
+**Install types via npm:**
+
+```bash
+npm install --save-dev @types/copy-paste
+```
+
+These definitions were written by [Tobias Kahlert](https://github.com/SrTobi).
+
+Type definitions available on npm: [@types/copy-paste](https://www.npmjs.com/package/@types/copy-paste)
+
+Once installed, you can import the package in your TypeScript code as usual:
+
+```ts
+import { copy, paste } from 'copy-paste';
+
+copy('Hello TypeScript');
+const text = paste();
+```
+
+Or, if you're using the promise-based API:
+
+```ts
+import { copy, paste } from 'copy-paste/promises';
+
+await copy('Hello TypeScript');
+const text = await paste();
+```
+
 ## Future plans
 
 I'm hoping to add various fallbacks for instances when `xclip` or `clip` is not avaiable (see [experimental-fallbacks](https://github.com/xavi-/node-copy-paste/tree/experimental-fallbacks/platform) branch).  Also this library needs to be more thoroughly tested on windows.
